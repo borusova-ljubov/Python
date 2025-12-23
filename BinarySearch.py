@@ -1,15 +1,16 @@
 from operator import truediv, length_hint
 from wsgiref.validate import PartialIteratorWrapper
 
-#Output: [true,true,true,false,true]
-# candies = [15,14,13,4,3,2,1]#happy path
-# candies = [15,14,13,13,3,2,1]
-# candies = [1,1,1,1,1,1,1]
-# candies = [15,5,5,5,5,1]
-# candies = [15,5,5,5,5,5,1]
-# candies = [15,12,12,12,12,12,12,1]
-candies = [5,3,3,2,1]
-# candies = [5,5,5,5,5,5]
+candies = (
+    [[5,3,3,2,1],3],        #odd
+    [[5,3,3,2,1,1],3],      #even
+    [[15,14,13,4,3,2,1],2], #odd
+    [[15,14,13,13,3,2,1],3],    #odd
+    [[1,1,1,1,1,1,1],6],        #odd
+    [[1,1,1,1,1,1,1,1],7],      #even
+    [[15,5,5,5,5,1], 0],
+    [[15,5,5,5,5,5,1], 0],
+    [[15,12,12,12,12,12,12,1], 6])
 extraCandies = 3
 maxCan = 0
 
@@ -17,7 +18,6 @@ maxCan = 0
 class FindMaxInTree:
     def searchBorder(self, candies: [int], extraCandies: int, maxCan: int, middle: int, binaryLen: int)-> int:
 
-        # if candies[middle]+extraCandies > maxCan and candies[middle + 1] < candies[middle]:
         if candies[middle]+extraCandies >= maxCan:
             if binaryLen == 1: #идем в правую часть
                 return middle
@@ -26,14 +26,13 @@ class FindMaxInTree:
             if binaryLen % 2 == 0:
                 binaryLenOddCorrection = 1
             fb = self.searchBorder(candies, extraCandies, maxCan, middle - binaryLenOddCorrection + 1 + binaryLen//2, binaryLen)
-            if candies[middle] > candies[fb] + extraCandies:
+            if fb == -1 or (candies[fb] + extraCandies < maxCan) :
                  return middle
             else:
                  return fb
-            #return fb
         else: #идем в левую часть
             if binaryLen == 1:
-                return middle
+                return -1
             else:
                 binaryLenOddCorrection = 0
                 if binaryLen % 2 == 0:
@@ -43,8 +42,12 @@ class FindMaxInTree:
 
 
 solution = FindMaxInTree()
-binaryLenOddCorrection = 0
-if len(candies) % 2 == 0:
-    binaryLenOddCorrection = 1
-fb = solution.searchBorder(candies, 3, candies[0], len(candies)//2 - binaryLenOddCorrection, len(candies))
-print(fb)
+for candieTuple in candies:
+    binaryLenOddCorrection = 0
+    if len(candieTuple) % 2 == 0:
+        binaryLenOddCorrection = 1
+    fb = solution.searchBorder(candieTuple[0], 3, candieTuple[0][0], len(candieTuple[0])//2 - binaryLenOddCorrection, len(candieTuple[0]))
+    if fb == candieTuple[1]:
+        print("\033[32m{} PASSED\033[0m".format(candieTuple[0]))
+    else:
+        print("\033[31m{} FUCKED UP, expected found border - {}, but {} found \033[0m".format(candieTuple[0], candieTuple[1], fb))
