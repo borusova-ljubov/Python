@@ -46,18 +46,19 @@ class FindMaxInTree:
             if binaryLen % 2 == 0:
                 binaryLenOddCorrection = 1
             fb = self.searchBorder(candies, extraCandies, maxCan, middle - binaryLenOddCorrection + 1 + binaryLen//2, binaryLen)
-            if fb == -1 or (candies[fb] + extraCandies < maxCan) :
+            if fb == -1:
                  return middle
             else:
                  return fb
         else: #идем в левую часть
-            if binaryLen == 1:
+            if binaryLen <= 1:
                 return -1
             else:
                 binaryLenOddCorrection = 0
+                binaryLen = binaryLen//2
                 if binaryLen % 2 == 0:
                     binaryLenOddCorrection = 1
-                fb = self.searchBorder(candies, extraCandies, maxCan, (middle - 1) - binaryLen//4, (binaryLen + binaryLenOddCorrection - 1)//2)
+                fb = self.searchBorder(candies, extraCandies, maxCan, (middle - 1) - binaryLen//2, binaryLen - binaryLenOddCorrection)
                 return fb
 
 
@@ -66,8 +67,8 @@ for candieTuple in candies:
     binaryLenOddCorrection = 0
     if len(candieTuple[0]) % 2 == 0:
         binaryLenOddCorrection = 1
-    fb = solution.searchBorder(candieTuple[0], 3, candieTuple[0][0], len(candieTuple[0])//2 - binaryLenOddCorrection, len(candieTuple[0]))
+    fb = solution.searchBorder(candieTuple[0], extraCandies, candieTuple[0][0], len(candieTuple[0])//2 - binaryLenOddCorrection, len(candieTuple[0]))
     if fb == candieTuple[1]:
         print("\033[32m{} PASSED\033[0m".format(candieTuple[0]))
     else:
-        print("\033[31m{} FUCKED UP, expected found border - {}, but {} found \033[0m".format(candieTuple[0], candieTuple[1], fb))
+        print("\033[31m{} FUCKED UP, expected border - {}, but {} found \033[0m".format(candieTuple[0], candieTuple[1], fb))
